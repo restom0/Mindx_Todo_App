@@ -43,7 +43,7 @@ describe("env config", () => {
 
   test("uses safe fallbacks for invalid optional settings", () => {
     const env = loadEnv({
-      NODE_ENV: "",
+      NODE_ENV: "production",
       PORT: "nope",
       API_PREFIX: "",
       CORS_ORIGIN: "",
@@ -53,7 +53,7 @@ describe("env config", () => {
 
     expect(env).toEqual(
       expect.objectContaining({
-        nodeEnv: "development",
+        nodeEnv: "production",
         port: 3000,
         apiPrefix: "/api",
         corsOrigins: [],

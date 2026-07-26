@@ -16,17 +16,20 @@ const getResponseMeta = (payload) =>
 
 export const fetchTodos = createAsyncThunk(
   "todos/fetch",
-  async (_, {getState, rejectWithValue}) => {
+  async (options = {}, {getState, rejectWithValue}) => {
     const state = getState();
+    const query = {
+      ...state.todos.filters,
+      page: "1",
+      limit: "100"
+    };
+
+    if (options?.demo) {
+      query.demo = "true";
+    }
+
     try {
-      return await todoApi.list(
-        {
-          ...state.todos.filters,
-          page: "1",
-          limit: "100"
-        },
-        getLanguage(state)
-      );
+      return await todoApi.list(query, getLanguage(state));
     } catch (error) {
       return rejectWithValue(error.message);
     }

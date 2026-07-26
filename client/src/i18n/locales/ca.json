@@ -8,6 +8,7 @@
   "nav": {
     "primary": "Navegacio principal",
     "todos": "Tasques",
+    "demo": "Mode demo",
     "insights": "Analisi",
     "skipToContent": "Vés al contingut principal"
   },

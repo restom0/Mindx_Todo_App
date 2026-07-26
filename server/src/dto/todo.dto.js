@@ -89,6 +89,12 @@ const repeatRuleSchema = z
   .nullable()
   .optional();
 
+const queryBooleanSchema = z
+  .union([z.boolean(), z.string()])
+  .optional()
+  .default(false)
+  .transform((value) => ["1", "true", "yes", "on"].includes(String(value).toLowerCase()));
+
 const todoIdParamsSchema = z.object({
   id: nonEmptyText(120)
 });
@@ -98,6 +104,7 @@ const todoQuerySchema = z.object({
   search: z.string().trim().max(160).optional().default(""),
   sort: z.enum(["createdAt", "updatedAt", "title"]).default("createdAt"),
   order: z.enum(["asc", "desc"]).default("desc"),
+  demo: queryBooleanSchema,
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(100)
 });

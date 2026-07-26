@@ -8,6 +8,7 @@
   "nav": {
     "primary": "Hauptnavigation",
     "todos": "Todos",
+    "demo": "Demo-Modus",
     "insights": "Einblicke",
     "skipToContent": "Zum Hauptinhalt springen"
   },

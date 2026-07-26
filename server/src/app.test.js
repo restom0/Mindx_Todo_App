@@ -133,7 +133,7 @@ describe("Express app integration", () => {
   });
 
   test("blocks demo seeding unless demo mode is enabled", async () => {
-    const {app} = loadApp();
+    const {app} = loadApp({DEMO_MODE_ENABLED: "false"});
 
     const response = await request(app).post("/api/demo/seed").send({reset: true});
 

@@ -1,4 +1,4 @@
-import {CheckCircle2} from "lucide-react";
+import {CheckCircle2, Sparkles} from "lucide-react";
 import {Link, NavLink} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import GoogleLoginButton from "./GoogleLoginButton.jsx";
@@ -22,6 +22,10 @@ function AppShell({children}) {
 
         <nav className="topbar__nav" aria-label={t("nav.primary")}>
           <NavLink to="/">{t("nav.todos")}</NavLink>
+          <NavLink className="topbar__demo-link" to="/demo">
+            <Sparkles size={16} aria-hidden="true" />
+            <span>{t("nav.demo")}</span>
+          </NavLink>
           <NavLink to="/insights">{t("nav.insights")}</NavLink>
         </nav>
 

@@ -66,6 +66,7 @@ function App() {
       <Suspense fallback={<Skeleton rows={6} />}>
         <Routes>
           <Route path="/" element={<TodoPage />} />
+          <Route path="/demo" element={<TodoPage demoMode />} />
           <Route path="/insights" element={<InsightsPage />} />
           <Route path={SERVER_DOWN_PATH} element={<ServerDownPage />} />
           <Route path="*" element={<NotFoundPage />} />

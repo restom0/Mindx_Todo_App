@@ -2,6 +2,7 @@ import {Plus, Sparkles} from "lucide-react";
 import {useEffect, useMemo, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useDispatch, useSelector} from "react-redux";
+import {useLocation} from "react-router-dom";
 import Button from "../components/Button.jsx";
 import AdvancedWorkspace from "../components/AdvancedWorkspace.jsx";
 import Card from "../components/Card.jsx";
@@ -30,14 +31,14 @@ import {todoApi} from "../services/todoApi.js";
 
 const truthy = (value) => ["1", "true", "yes", "on"].includes(String(value).toLowerCase());
 
-const isDemoModeEnabled = () => {
-  const search = globalThis.window?.location?.search ?? "";
+const isDemoModeEnabled = (search = "") => {
   const demoParam = new URLSearchParams(search).get("demo");
   return truthy(import.meta.env.VITE_DEMO_MODE) || truthy(demoParam);
 };
 
-function TodoPage() {
+function TodoPage({demoMode = false}) {
   const dispatch = useDispatch();
+  const location = useLocation();
   const {t} = useTranslation();
   const todos = useSelector(selectTodos);
   const status = useSelector(selectTodoStatus);
@@ -52,15 +53,18 @@ function TodoPage() {
   const [demoStatus, setDemoStatus] = useState("idle");
   const [demoMessage, setDemoMessage] = useState("");
   const todoItems = useMemo(() => (Array.isArray(todos) ? todos : []), [todos]);
-  const demoModeEnabled = useMemo(() => isDemoModeEnabled(), []);
+  const demoModeEnabled = useMemo(
+    () => demoMode || isDemoModeEnabled(location.search),
+    [demoMode, location.search]
+  );
 
   useEffect(() => {
     const handle = window.setTimeout(() => {
-      dispatch(fetchTodos());
+      dispatch(fetchTodos({demo: demoModeEnabled}));
     }, 180);
 
     return () => window.clearTimeout(handle);
-  }, [dispatch, filters, language]);
+  }, [demoModeEnabled, dispatch, filters, language]);
 
   const stats = useMemo(() => {
     const completed = todoItems.filter((todo) => todo.completed).length;
@@ -87,7 +91,7 @@ function TodoPage() {
       } else {
         await dispatch(createTodo(payload)).unwrap();
       }
-      dispatch(fetchTodos());
+      dispatch(fetchTodos({demo: demoModeEnabled}));
       closeModal();
     } catch {
       // Redux state already carries the translated server/client error.
@@ -100,7 +104,7 @@ function TodoPage() {
       if (!todo.completed) {
         dispatch(awardCompletion());
       }
-      dispatch(fetchTodos());
+      dispatch(fetchTodos({demo: demoModeEnabled}));
     } catch {
       // Redux state already carries the translated server/client error.
     }
@@ -109,7 +113,7 @@ function TodoPage() {
   const handleDelete = async (id) => {
     try {
       await dispatch(deleteTodo(id)).unwrap();
-      dispatch(fetchTodos());
+      dispatch(fetchTodos({demo: demoModeEnabled}));
     } catch {
       // Redux state already carries the translated server/client error.
     }
@@ -126,7 +130,7 @@ function TodoPage() {
     };
     try {
       await dispatch(updateTodo({id, changes: normalizedChanges})).unwrap();
-      dispatch(fetchTodos());
+      dispatch(fetchTodos({demo: demoModeEnabled}));
     } catch {
       // Redux state already carries the translated server/client error.
     }
@@ -155,7 +159,7 @@ function TodoPage() {
           }))
         })
       ).unwrap();
-      dispatch(fetchTodos());
+      dispatch(fetchTodos({demo: demoModeEnabled}));
     } catch {
       // Redux state already carries the translated server/client error.
     }
@@ -176,7 +180,7 @@ function TodoPage() {
 
     try {
       const response = await todoApi.seedDemoData({reset: true}, language);
-      await dispatch(fetchTodos()).unwrap();
+      await dispatch(fetchTodos({demo: true})).unwrap();
       setDemoStatus("success");
       setDemoMessage(
         t("demo.loaded", {

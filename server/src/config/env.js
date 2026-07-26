@@ -34,7 +34,7 @@ const env = {
   healthRateLimitWindowMs: toNumber(process.env.HEALTH_RATE_LIMIT_WINDOW_MS, 60 * 1000),
   healthRateLimitMax: toNumber(process.env.HEALTH_RATE_LIMIT_MAX, 60),
   trustProxy: toBoolean(process.env.TRUST_PROXY),
-  demoModeEnabled: toBoolean(process.env.DEMO_MODE_ENABLED)
+  demoModeEnabled: toBoolean(process.env.DEMO_MODE_ENABLED, process.env.NODE_ENV !== "production")
 };
 
 module.exports = {env};

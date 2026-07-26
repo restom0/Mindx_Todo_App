@@ -1,4 +1,5 @@
 const {prisma} = require("../config/prisma");
+const {DEMO_PREFIX} = require("../data/demoFlowData");
 
 const todoInclude = {
   subtasks: {
@@ -18,8 +19,14 @@ const omitUndefined = (value) => {
   return Object.fromEntries(Object.entries(value).filter(([, entry]) => entry !== undefined));
 };
 
-const getWhereClause = ({filter, search}) => {
+const getWhereClause = ({filter, search, demo}) => {
   const where = {};
+
+  if (demo) {
+    where.id = {startsWith: DEMO_PREFIX};
+  } else {
+    where.NOT = {id: {startsWith: DEMO_PREFIX}};
+  }
 
   if (filter === "active") {
     where.completed = false;
